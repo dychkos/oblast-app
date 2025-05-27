@@ -1,0 +1,161 @@
+services:
+    db:
+        image: mysql:8.1
+        restart: always
+        container_name: "oblast_db"
+
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+        ports:
+            - '3306:3306'
+        expose:
+            - '3306'
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD}'
+            retries: 3
+            timeout: 5s
+        networks:
+            - oblast_db_network
+
+    app: &app
+        build:
+            args:
+                user: oblast_user
+                uid: 1000
+            context: ./
+            dockerfile: docker/php/Dockerfile
+        restart: unless-stopped
+        container_name: oblast_app
+        environment:
+            COMMAND: /usr/local/sbin/php-fpm --nodaemonize
+            PROCESS: app
+        depends_on:
+            db:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        volumes:
+            - ./:/var/www
+        networks:
+            - oblast_db_network
+            - oblast_webserver_network
+            - oblast_redis_network
+            - oblast_memcached_network
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+            interval: 5s
+            timeout: 10s
+            retries: 20
+
+    horizon:
+        <<: *app
+        container_name: oblast_horizon
+        environment:
+            COMMAND: php artisan horizon
+            PROCESS: horizon
+        networks:
+            - oblast_db_network
+            - oblast_redis_network
+        healthcheck:
+            test: php artisan horizon:status | grep -q 'is running'
+            interval: 5s
+            timeout: 10s
+            retries: 20
+
+    schedule:
+        <<: *app
+        container_name: oblast_schedule
+        environment:
+            COMMAND: supercronic -quiet /var/www/docker/php/schedule/crontab
+            PROCESS: schedule
+        networks:
+            - oblast_db_network
+            - oblast_redis_network
+        healthcheck:
+            test: supercronic -test /var/www/docker/php/schedule/crontab | grep -q 'is valid'
+            interval: 5s
+            timeout: 10s
+            retries: 2
+
+    webserver:
+        image: nginx:1.26.0-alpine
+        container_name: oblast_webserver
+        restart: unless-stopped
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+            - ./storage/logs/nginx/:/var/log/nginx/
+        ports:
+            - 8083:80
+        networks:
+            - oblast_webserver_network
+        healthcheck:
+            test: curl -s http://localhost/up >/dev/null || exit 1
+            interval: 5s
+            timeout: 10s
+            retries: 20
+
+    redis:
+        image: redis:7.2.4-alpine
+        restart: unless-stopped
+        container_name: oblast_redis
+        command:
+            - 'redis-server'
+            - '--requirepass ${REDIS_PASSWORD}'
+        volumes:
+            - redis_data:/data
+        networks:
+            - oblast_redis_network
+        healthcheck:
+            test: redis-cli ping
+            interval: 5s
+            timeout: 10s
+            retries: 20
+
+    memcached:
+        container_name: oblast_memcached
+        image: 'memcached:1.6.38-alpine'
+        ports:
+            - '11211:11211'
+        networks:
+            - oblast_memcached_network
+
+    phpmyadmin:
+        image: 'phpmyadmin:latest'
+        ports:
+            - 8080:80
+        networks:
+            - oblast_db_network
+        environment:
+            - PMA_ARBITRARY=1
+
+volumes:
+    oblast_db_data:
+        driver: local
+        name: oblast_db_data
+    redis_data:
+        driver: local
+        name: oblast_redis_data
+
+
+networks:
+    oblast_db_network:
+        driver: bridge
+        name: oblast_db_network
+    oblast_webserver_network:
+        driver: bridge
+        name: oblast_webserver_network
+    oblast_redis_network:
+        driver: bridge
+        name: oblast_redis_network
+    oblast_memcached_network:
+        driver: bridge
+        name: oblast_memcached_network

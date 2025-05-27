@@ -15,3 +15,29 @@ All setting described in the file
 ```
 commitlint.config.js
 ```
+
+## Setup local
+1) Copy environments
+```sh
+cp .env.example .env
+```
+2) Run docker
+```sh
+docker compose up -d --build
+```
+3) Generate app key
+```sh 
+docker compose exec app php artisan key:generate
+```
+4) Run migrations
+```sh 
+docker compose exec app php artisan migrate
+```
+5) #if services still unhealthy - restart docker
+```sh 
+docker compose up -d --build
+```
+
+### Entry points
+* [http://localhost/](http://localhost/) - api application
+* [http://localhost/horizon](http://localhost/horizon) - queue manager
