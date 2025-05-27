@@ -35,13 +35,11 @@ class OblastService
     public function purgeAllData(): void
     {
         $this->oblastRepository->truncate();
-//        $this->cacheService->flush();
     }
 
     public function upsertOblastsData(array $oblasts): void
     {
         $this->oblastRepository->bulkUpsert($oblasts);
-//        $this->cacheService->flush();
     }
 
     private function generateCacheKey(CoordinatesDTO $coordinates): string

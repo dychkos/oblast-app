@@ -45,5 +45,4 @@ trait HasPolygon
 
         throw new \InvalidArgumentException('Invalid geojson structure');
     }
-
 }

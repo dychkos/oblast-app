@@ -16,7 +16,7 @@ class EloquentOblastRepository implements OblastRepositoryInterface
     {
         return Oblast::whereHas('polygon', function (Builder $query) use ($coordinates) {
             $query->whereRaw(
-                "ST_Contains(ST_GeomFromGeoJSON(geojson), ST_GeomFromText(?))",
+                'ST_Contains(ST_GeomFromGeoJSON(geojson), ST_GeomFromText(?))',
                 [$this->point($coordinates)]
             );
         })->get();
@@ -26,7 +26,7 @@ class EloquentOblastRepository implements OblastRepositoryInterface
     {
         return Oblast::whereHas('polygon', function (Builder $query) use ($coordinates) {
             $query->whereRaw(
-                "ST_Contains(ST_GeomFromGeoJSON(geojson), ST_GeomFromText(?))",
+                'ST_Contains(ST_GeomFromGeoJSON(geojson), ST_GeomFromText(?))',
                 [$this->point($coordinates)]
             );
         })->first();
@@ -63,7 +63,7 @@ class EloquentOblastRepository implements OblastRepositoryInterface
                     $oblast = Oblast::updateOrCreate(
                         [
                             'provider_name' => $oblastData['provider_name'] ?? null,
-                            'provider_id' => $oblastData['provider_id'] ?? null
+                            'provider_id' => $oblastData['provider_id'] ?? null,
                         ],
                         $oblastData
                     );
