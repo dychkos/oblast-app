@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'nominatim' => [
+        'base_url' => env('NOMINATIM_BASE_URL'),
+    ],
 ];
