@@ -1,0 +1,4 @@
+{
+    "pattern": "^(master|main|development){1}$|^(feature|fix|hotfix|release|refactor)\/.+$",
+    "errorMsg": "Branch name validate failed please rename your current branch. Follow regex patter"
+}
