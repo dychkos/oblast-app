@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     libpng-dev \
     libonig-dev \
+    mariadb-client \
     libxml2-dev \
     zip \
     unzip \
@@ -42,8 +43,10 @@ RUN composer dump-autoload --optimize \
     && chmod -R 755 /var/www/storage \
     && chmod -R 755 /var/www/bootstrap/cache
 
-USER $user
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
+USER $user
 EXPOSE 9000
 
-ENTRYPOINT ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
+ENTRYPOINT ["entrypoint.sh"]

@@ -25,18 +25,7 @@ cp .env.example .env
 ```sh
 docker compose up -d --build
 ```
-3) Generate app key
-```sh 
-docker compose exec app php artisan key:generate
-```
-4) Run migrations
-```sh 
-docker compose exec app php artisan migrate
-```
-5) #if services still unhealthy - restart docker
-```sh 
-docker compose up -d --build
-```
+
 
 ### Entry points
 * [http://localhost:8083](http://localhost/) - api application
