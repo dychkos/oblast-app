@@ -14,6 +14,10 @@ class OblastSearchResultDTO
     public function toResource(): OblastCollectionResource
     {
         return (new OblastCollectionResource($this->data))
-            ->additional(['cacheStatus' => $this->cacheStatus]);
+            ->additional([
+                'meta' => [
+                    'cacheStatus' => $this->cacheStatus
+                ]
+            ]);
     }
 }

@@ -6,13 +6,17 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class OblastCollectionResource extends ResourceCollection
 {
+    public $collects = OblastResource::class;
+
     public function toArray($request): array
     {
         return [
             'data' => $this->collection,
-            'meta' => [
-                'cacheStatus' => $this->additional['cacheStatus'] ?? null,
-            ],
         ];
+    }
+
+    public function jsonOptions(): int
+    {
+        return JSON_UNESCAPED_UNICODE;
     }
 }

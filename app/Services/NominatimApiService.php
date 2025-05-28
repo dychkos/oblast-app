@@ -22,6 +22,8 @@ class NominatimApiService implements OblastsApiProvider
 
     private readonly string $baseUrl;
 
+    public string $country;
+
     public function __construct()
     {
         $this->httpClient = new Client;
@@ -30,6 +32,8 @@ class NominatimApiService implements OblastsApiProvider
         if (! $this->baseUrl) {
             throw new \RuntimeException('Nominatim api base url is not defined');
         }
+
+        $this->country = config('app.country');
     }
 
     public function getUkrainianOblastNames(): array
@@ -51,7 +55,7 @@ class NominatimApiService implements OblastsApiProvider
             $response = $this->httpClient->get('/search', [
                 'base_uri' => $this->baseUrl,
                 'query' => [
-                    'q' => "{$oblastName}, Ukraine",
+                    'q' => "{$oblastName}, {$this->country}",
                     'format' => 'json',
                     'polygon_geojson' => 1,
                     'limit' => 1,
@@ -76,7 +80,6 @@ class NominatimApiService implements OblastsApiProvider
             $result = $data[0] ?? [];
 
             $validator = Validator::make($result, [
-                'place_id' => 'required',
                 'name' => 'required',
                 'display_name' => 'required',
                 'lat' => 'required',
@@ -89,6 +92,9 @@ class NominatimApiService implements OblastsApiProvider
                 throw new ValidationException($validator);
             }
 
+            $hashInput = $result['lat'] . $result['lon'];
+            $locationHash = hash('md5', $hashInput);
+
             return [
                 'name' => $result['name'],
                 'display_name' => $result['display_name'],
@@ -96,7 +102,7 @@ class NominatimApiService implements OblastsApiProvider
                 'lon' => $result['lon'],
                 'polygon' => $result['geojson'],
                 'provider_name' => self::PROVIDER_NAME,
-                'provider_id' => $result['place_id'],
+                'provider_id' => $locationHash,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

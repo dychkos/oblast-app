@@ -14,10 +14,6 @@ class Polygon extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'geojson' => 'array',
-    ];
-
     public function polygonable(): MorphTo
     {
         return $this->morphTo();

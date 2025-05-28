@@ -12,11 +12,12 @@ use Illuminate\Support\Facades\DB;
 
 class EloquentOblastRepository implements OblastRepositoryInterface
 {
+
     public function findAllByCoordinates(CoordinatesDTO $coordinates): Collection
     {
         return Oblast::whereHas('polygon', function (Builder $query) use ($coordinates) {
             $query->whereRaw(
-                'ST_Contains(ST_GeomFromGeoJSON(geojson), ST_GeomFromText(?))',
+                'ST_Contains(ST_GeomFromGeoJSON(geojson, 1, 4326), ST_SRID(ST_GeomFromText(?), 4326))',
                 [$this->point($coordinates)]
             );
         })->get();
@@ -26,7 +27,7 @@ class EloquentOblastRepository implements OblastRepositoryInterface
     {
         return Oblast::whereHas('polygon', function (Builder $query) use ($coordinates) {
             $query->whereRaw(
-                'ST_Contains(ST_GeomFromGeoJSON(geojson), ST_GeomFromText(?))',
+                'ST_Contains(ST_GeomFromGeoJSON(geojson, 1, 4326), ST_SRID(ST_GeomFromText(?), 4326))',
                 [$this->point($coordinates)]
             );
         })->first();
@@ -34,21 +35,22 @@ class EloquentOblastRepository implements OblastRepositoryInterface
 
     public function create(array $data): Oblast
     {
-        $polygon = $data['polygon'] ?? null;
-        unset($data['polygon']);
+        return DB::transaction(function () use ($data) {
+            $oblast = Oblast::create($data);
+            $polygon = $data['polygon'] ?? null;
+            unset($data['polygon']);
 
-        $oblast = Oblast::create($data);
+            if ($polygon) {
+                $oblast->setPolygon($polygon);
+            }
 
-        if ($polygon) {
-            $oblast->setPolygon($polygon);
-        }
-
-        return $oblast;
+            return $oblast;
+        });
     }
 
     public function truncate(): void
     {
-        Polygon::where('polygonable_type', Oblast::class)->delete();
+        Polygon::where('polygonable_type', 'oblast')->delete();
         Oblast::truncate();
     }
 

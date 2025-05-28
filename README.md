@@ -39,5 +39,5 @@ docker compose up -d --build
 ```
 
 ### Entry points
-* [http://localhost/](http://localhost/) - api application
+* [http://localhost:8083](http://localhost/) - api application
 * [http://localhost/horizon](http://localhost/horizon) - queue manager

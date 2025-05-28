@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Cache;
 class OblastService
 {
     private const CACHE_TTL = 3600; // 1 hour
+    private const CACHE_PREFIX = 'oblasts';
+    private const CACHE_VERSION_KEY = 'oblasts:version';
 
     public function __construct(
         private readonly OblastRepositoryInterface $oblastRepository,
@@ -35,15 +37,37 @@ class OblastService
     public function purgeAllData(): void
     {
         $this->oblastRepository->truncate();
+        $this->invalidateAllCache();
     }
 
     public function upsertOblastsData(array $oblasts): void
     {
         $this->oblastRepository->bulkUpsert($oblasts);
+        $this->invalidateAllCache();
     }
+
+    private function invalidateAllCache(): void
+    {
+        $this->incrementCacheVersion();
+    }
+
+    private function incrementCacheVersion(): void
+    {
+        $currentVersion = $this->getCacheVersion();
+        $newVersion = $currentVersion + 1;
+
+        Cache::put(self::CACHE_VERSION_KEY, $newVersion, now()->addDay());
+    }
+
+    private function getCacheVersion(): int
+    {
+        return Cache::get(self::CACHE_VERSION_KEY, 1);
+    }
+
 
     private function generateCacheKey(CoordinatesDTO $coordinates): string
     {
-        return "oblasts:{$coordinates->latitude}:{$coordinates->longitude}";
+        $version = $this->getCacheVersion();
+        return self::CACHE_PREFIX . ":{$coordinates->latitude}:{$coordinates->longitude}:v{$version}";
     }
 }
