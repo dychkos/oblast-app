@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 class EloquentOblastRepository implements OblastRepositoryInterface
 {
-
     public function findAllByCoordinates(CoordinatesDTO $coordinates): Collection
     {
         return Oblast::whereHas('polygon', function (Builder $query) use ($coordinates) {

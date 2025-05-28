@@ -58,13 +58,6 @@ class OblastController extends ApiController
 
     public function getRefreshJobStatus(OblastsRefreshRecord $job): OblastRefreshRecordResource|JsonResponse
     {
-        if (! $job->exists) {
-            return $this->errorResponse(
-                message: 'The job is not found',
-                code: Response::HTTP_NOT_FOUND
-            );
-        }
-
         return OblastRefreshRecordResource::make($job);
     }
 

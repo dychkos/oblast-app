@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Cache;
 class OblastService
 {
     private const CACHE_TTL = 3600; // 1 hour
+
     private const CACHE_PREFIX = 'oblasts';
+
     private const CACHE_VERSION_KEY = 'oblasts:version';
 
     public function __construct(
@@ -64,10 +66,10 @@ class OblastService
         return Cache::get(self::CACHE_VERSION_KEY, 1);
     }
 
-
     private function generateCacheKey(CoordinatesDTO $coordinates): string
     {
         $version = $this->getCacheVersion();
-        return self::CACHE_PREFIX . ":{$coordinates->latitude}:{$coordinates->longitude}:v{$version}";
+
+        return self::CACHE_PREFIX.":{$coordinates->latitude}:{$coordinates->longitude}:v{$version}";
     }
 }

@@ -92,7 +92,7 @@ class NominatimApiService implements OblastsApiProvider
                 throw new ValidationException($validator);
             }
 
-            $hashInput = $result['lat'] . $result['lon'];
+            $hashInput = $result['lat'].$result['lon'];
             $locationHash = hash('md5', $hashInput);
 
             return [

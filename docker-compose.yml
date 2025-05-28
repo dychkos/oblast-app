@@ -1,6 +1,6 @@
 services:
     db:
-        image: mysql:8.1
+        image: mysql:8.0
         restart: always
         container_name: "oblast_db"
 
@@ -10,10 +10,14 @@ services:
             MYSQL_DATABASE: '${DB_DATABASE}'
             MYSQL_USER: '${DB_USERNAME}'
             MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
         ports:
             - '3306:3306'
         expose:
             - '3306'
+        volumes:
+            - 'oblast_mysql_data:/var/lib/mysql'
+            - './docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/1-create-testing-database.sh'
         healthcheck:
             test:
                 - CMD
@@ -138,9 +142,9 @@ services:
             - PMA_ARBITRARY=1
 
 volumes:
-    oblast_db_data:
+    oblast_mysql_data:
         driver: local
-        name: oblast_db_data
+        name: oblast_mysql_data
     redis_data:
         driver: local
         name: oblast_redis_data

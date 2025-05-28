@@ -15,11 +15,11 @@ Route::get('/health', function () {
 });
 
 Route::prefix('oblasts')->group(function () {
-    Route::get('/', [OblastController::class, 'index']);
-    Route::delete('/', [OblastController::class, 'destroy']);
+    Route::get('/', [OblastController::class, 'index'])->name('oblasts.index');
+    Route::delete('/', [OblastController::class, 'destroy'])->name('oblasts.destroy');
 
     Route::prefix('refresh-jobs')->group(function () {
-        Route::post('/', [OblastController::class, 'createRefreshJob']);
-        Route::get('/{job}', [OblastController::class, 'getRefreshJobStatus']);
+        Route::post('/', [OblastController::class, 'createRefreshJob'])->name('oblasts.createRefreshJob');
+        Route::get('/{job}', [OblastController::class, 'getRefreshJobStatus'])->name('oblasts.getRefreshJobStatus');
     });
 });
