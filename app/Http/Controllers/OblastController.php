@@ -47,9 +47,9 @@ class OblastController extends ApiController
 
         $job = $refreshOblastsRepository->create($delay);
 
-        RefreshOblastDataJob::dispatchSync($job->id);
-        //            ->delay(now()->addSeconds($delay))
-        //            ->onConnection('redis');
+        RefreshOblastDataJob::dispatchSync($job->id)
+            ->delay(now()->addSeconds($delay))
+            ->onConnection('redis');
 
         return $this->successResponse([
             'id' => $job->id,

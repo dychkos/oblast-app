@@ -40,12 +40,12 @@ class NominatimApiService implements OblastsApiProvider
     {
         return [
             'Kyiv Oblast', 'Kharkiv Oblast', 'Lviv Oblast', 'Dnipropetrovsk Oblast',
-            //            'Donetsk Oblast', 'Zaporizhzhia Oblast', 'Odesa Oblast', 'Poltava Oblast',
-            //            'Chernihiv Oblast', 'Cherkasy Oblast', 'Zhytomyr Oblast', 'Sumy Oblast',
-            //            'Kherson Oblast', 'Mykolaiv Oblast', 'Kirovohrad Oblast', 'Vinnytsia Oblast',
-            //            'Chernivtsi Oblast', 'Rivne Oblast', 'Volyn Oblast', 'Ternopil Oblast',
-            //            'Ivano-Frankivsk Oblast', 'Zakarpattia Oblast', 'Khmelnytskyi Oblast',
-            //            'Luhansk Oblast', 'Crimea'
+            'Donetsk Oblast', 'Zaporizhzhia Oblast', 'Odesa Oblast', 'Poltava Oblast',
+            'Chernihiv Oblast', 'Cherkasy Oblast', 'Zhytomyr Oblast', 'Sumy Oblast',
+            'Kherson Oblast', 'Mykolaiv Oblast', 'Kirovohrad Oblast', 'Vinnytsia Oblast',
+            'Chernivtsi Oblast', 'Rivne Oblast', 'Volyn Oblast', 'Ternopil Oblast',
+            'Ivano-Frankivsk Oblast', 'Zakarpattia Oblast', 'Khmelnytskyi Oblast',
+            'Luhansk Oblast', 'Crimea'
         ];
     }
 
