@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if [ ! -f ".env" ]; then
+    cp .env.example .env
+    php artisan key:generate --force
+fi
+
 # Only run initialization for the main app service
 if [ "$PROCESS" = "app" ]; then
     echo "Initializing application..."
@@ -12,7 +17,6 @@ if [ "$PROCESS" = "app" ]; then
     done
 
     # Run initialization commands
-    php artisan key:generate --force
     php artisan config:cache
     php artisan migrate --force
     php artisan storage:link

@@ -45,7 +45,7 @@ class NominatimApiService implements OblastsApiProvider
             'Kherson Oblast', 'Mykolaiv Oblast', 'Kirovohrad Oblast', 'Vinnytsia Oblast',
             'Chernivtsi Oblast', 'Rivne Oblast', 'Volyn Oblast', 'Ternopil Oblast',
             'Ivano-Frankivsk Oblast', 'Zakarpattia Oblast', 'Khmelnytskyi Oblast',
-            'Luhansk Oblast', 'Crimea'
+            'Luhansk Oblast', 'Crimea',
         ];
     }
 
