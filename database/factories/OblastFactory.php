@@ -32,8 +32,8 @@ class OblastFactory extends Factory
                         [$oblast->lon + 0.1, $oblast->lat + 0.1],
                         [$oblast->lon - 0.1, $oblast->lat + 0.1],
                         [$oblast->lon - 0.1, $oblast->lat - 0.1],
-                    ]
-                ]
+                    ],
+                ],
             ];
 
             $oblast->setPolygon($polygon);

@@ -28,7 +28,7 @@ class OblastControllerTest extends TestCase
 
         $response = $this->getJson(route('api.oblasts.index', [
             'lat' => 50.4500,
-            'lon' => 30.5230
+            'lon' => 30.5230,
         ]));
 
         $response->assertStatus(Response::HTTP_OK)
@@ -59,9 +59,8 @@ class OblastControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
-                'data' => ['id']
+                'data' => ['id'],
             ]);
-
 
         $this->assertDatabaseHas('oblasts_refresh_records', [
             'id' => $response->json()['data']['id'],
@@ -113,12 +112,12 @@ class OblastControllerTest extends TestCase
     {
         Queue::fake();
         $response = $this->postJson(route('api.oblasts.createRefreshJob'), [
-            'delay' => 60
+            'delay' => 60,
         ]);
 
         $response->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
-                'data' => ['id']
+                'data' => ['id'],
             ]);
 
         $this->assertDatabaseHas('oblasts_refresh_records', [
